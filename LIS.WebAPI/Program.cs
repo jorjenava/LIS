@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using AppContext = LIS.DataContext.AppContext;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddCors(options =>
+    options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+
 var connectionString = builder.Configuration.GetConnectionString("AppContext");
 
 builder.Services.AddDbContext<IAppContext, AppContext>(options =>
@@ -23,6 +26,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors();
 
 app.MapGet("/people/{id:Guid}", async (IAppContext context, Guid id) => await context.People.FindAsync(id))
     .WithName("GetPerson")

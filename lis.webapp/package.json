@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "generate:api": "rm -rf api_client; openapi-generator-cli generate -i http://localhost:5146/swagger/v1/swagger.json -g typescript-axios -o api_client -c openapi-config.json"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
@@ -14,12 +15,14 @@
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^6.4.1",
     "@mui/material-nextjs": "^6.3.1",
+    "axios": "^1.7.9",
     "next": "15.1.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@openapitools/openapi-generator-cli": "^2.16.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

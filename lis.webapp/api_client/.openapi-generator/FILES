@@ -1,0 +1,12 @@
+.gitignore
+.npmignore
+.openapi-generator-ignore
+api.ts
+apis/lisweb-apiapi.ts
+base.ts
+common.ts
+configuration.ts
+git_push.sh
+index.ts
+models/index.ts
+models/person-model.ts
