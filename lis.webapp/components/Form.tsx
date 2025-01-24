@@ -5,7 +5,7 @@ import ApiClient from "@/lib/ApiClient";
 import { PersonModel } from "@/api_client";
 
 export type FormProps = {
-  onSubmit: () => void;
+  onSubmit: (person: PersonModel) => void;
 };
 
 export const Form = ({ onSubmit }: FormProps) => {
@@ -32,10 +32,12 @@ export const Form = ({ onSubmit }: FormProps) => {
     try {
       const result = await ApiClient.savePerson(model);
 
-      if (result.status === 201) onSubmit();
+      if (result.status === 201)
+        onSubmit(result.data as unknown as PersonModel);
       else setSnackbarOpen(true);
     } catch (err) {
       setSnackbarOpen(true);
+      console.error(err);
     }
   };
 

@@ -15,10 +15,11 @@ import {
 import { useEffect, useState } from "react";
 
 export type PeopleTableProps = {
-  onReturn: () => void;
+  excludePersonId?: string;
+  onReturn: () => void;  
 };
 
-export const PeopleTable = ({ onReturn }: PeopleTableProps) => {
+export const PeopleTable = ({ excludePersonId: filter, onReturn }: PeopleTableProps) => {
   const [people, setPeople] = useState<PersonModel[]>([]);
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -28,7 +29,7 @@ export const PeopleTable = ({ onReturn }: PeopleTableProps) => {
       try {
         const result = await ApiClient.getPeople();
 
-        if (result.status === 200) setPeople(result.data);
+        if (result.status === 200) setPeople(result.data.filter(p => p.id !== filter));
         else setSnackbarOpen(true);
       } catch (err) {
         setSnackbarOpen(true);
@@ -41,7 +42,8 @@ export const PeopleTable = ({ onReturn }: PeopleTableProps) => {
 
   return (
     <>
-      <TableContainer component={Paper}>
+    <h2>Previous Entries</h2>
+      <TableContainer component={Paper} sx={{ marginTop: 2 }}>
         <Table>
           <TableHead>
             <TableRow>
