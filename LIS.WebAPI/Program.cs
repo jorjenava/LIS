@@ -1,8 +1,11 @@
+using FluentValidation;
 using LIS.DataContext;
+using LIS.WebAPI;
 using Microsoft.EntityFrameworkCore;
 using AppContext = LIS.DataContext.AppContext;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
@@ -14,6 +17,8 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IValidator<PersonModel>, PersonValidator>();
 
 var app = builder.Build();
 
@@ -36,8 +41,12 @@ app.MapGet("/people", async (IAppContext context) => await context.People.ToList
     .WithName("GetPeople")
     .WithOpenApi();
 
-app.MapPost("/people", async (IAppContext context, PersonModel person) =>
+app.MapPost("/people", async (IValidator<PersonModel> validator, IAppContext context, PersonModel person) =>
     {
+        var validationResult = await validator.ValidateAsync(person);
+
+        if (!validationResult.IsValid) return Results.ValidationProblem(validationResult.ToDictionary());
+
         context.People.Add(person);
         await context.SaveChangesAsync(CancellationToken.None);
 
@@ -45,7 +54,6 @@ app.MapPost("/people", async (IAppContext context, PersonModel person) =>
     })
     .WithName("SavePerson")
     .WithOpenApi();
-;
 
 app.Run();
 
